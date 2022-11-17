@@ -1,0 +1,3 @@
+# network access details
+WIFI_SSID = "your SSID here!"
+WIFI_PASS = "Your PSK here!"
