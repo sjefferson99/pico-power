@@ -1,6 +1,6 @@
 Pico W based relay controller for web based control of DC and AC circuits onboard.
 
-Ensure Pico W is used and is flashed with the Pico W firmware and not the vanilla Pico firmware
+this code is built around the Pimoroni Pico W firmware v1.19.9: https://github.com/pimoroni/pimoroni-pico/releases/download/v1.19.9/pimoroni-picow-v1.19.9-micropython.uf2
 
 Uses Pico W board mounted on the PiHut relay board: https://thepihut.com/products/raspberry-pi-pico-relay-board
 
