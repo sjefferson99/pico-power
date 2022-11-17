@@ -1,9 +1,9 @@
 Pico W based relay controller for web based control of DC and AC circuits onboard.
 
-this code is built around the Pimoroni Pico W firmware v1.19.9: https://github.com/pimoroni/pimoroni-pico/releases/download/v1.19.9/pimoroni-picow-v1.19.9-micropython.uf2
+This code is built around the Pimoroni Pico W firmware v1.19.9: https://github.com/pimoroni/pimoroni-pico/releases/download/v1.19.9/pimoroni-picow-v1.19.9-micropython.uf2
 
 Uses Pico W board mounted on the PiHut relay board: https://thepihut.com/products/raspberry-pi-pico-relay-board
 
-Optional LiPo and charger shim allows the Pico to reset circuits it is powered by without shutting down, you will need to connect v_sys to v_bus to power the relays from the shim.
+Optional LiPo and charger shim allows the Pico to reset circuits it is powered by without shutting down, you will need to connect VSYS to VBUS to power the relays from the shim.
 Battery: https://thepihut.com/products/2000mah-3-7v-lipo-battery?variant=42143258050755
 Charging shim: https://thepihut.com/products/lipo-shim-for-pico?variant=39809509785795
