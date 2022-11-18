@@ -28,8 +28,16 @@ class relay_board:
         sleep_ms(duration_ms)
         self.relays[relay].toggle()
 
+    def relay_switch(self, relay: int, value: int=1) -> None:
+        """For specified relay, connects common to value terminal
+        Value:
+        1: Common connected to NO
+        0: Common connected to NC
+        """
+        self.relays[relay].value(value)
+
     def demo(self) -> None:
-    
+        """Cycles quickly through toggling each relay"""
         x = 1
         while x <= 4:
             self.relay_toggle(x, 100, 1)
