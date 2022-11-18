@@ -12,7 +12,7 @@ led = Pin("LED", Pin.OUT)
 html = """<!DOCTYPE html>
 <html>
     <head> <title>Pico-Power</title> </head>
-    <body> <h1>Pico-Power: Relay control of 4 circuits Up to 240v AC or up to 30v DC</h1>
+    <body> <h1>Pico-Power: Relay control of 4 circuits up to 240v AC or 30v DC</h1>
         %s
     </body>
 </html>
@@ -23,12 +23,6 @@ baseurl_content = """
 Use the following URL suffixes to drive functions on this Pico:
 <ul>
 <li>Relay control - <a href="relay">/relay</a></li>
-</p>
-"""
-
-relayurl_content = """
-<p>
-You've selected relay
 </p>
 """
 
@@ -79,7 +73,7 @@ while True:
         request = str(request)
 
         baseurl = request.find('/ ')
-        relayurl = request.find('/relay ')
+        relayurl = request.find('/relay')
         
         if baseurl == 6:
             print("Base URL")
@@ -87,12 +81,12 @@ while True:
 
         elif relayurl == 6:
             print("Relay URL")
-            content = relayurl_content
+            content = relays.parse_web_request(request)
 
         else:
             print("Unknown URL")
             content = unknownurl_content + baseurl_content
-            
+
         response = html % content
 
         cl.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
