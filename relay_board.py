@@ -18,12 +18,6 @@ class relay_board:
             x += 1
             p += 1
 
-        #init LED
-        self.led = Pin("LED", Pin.OUT)
-        self.led.on()
-        sleep_ms(50)
-        self.led.off()
-
     def relay_toggle(self, relay: int, duration_ms: int = 1000, initial_value: int=1) -> None:
         """For specified relay, connects common to intiial value terminal for specified duration in ms then toggles to the opposite terminal
         Initial value:

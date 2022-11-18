@@ -28,7 +28,10 @@ while max_wait > 0:
         break
     max_wait -= 1
     print('waiting for connection...')
-    time.sleep(1)
+    led.on()
+    time.sleep(0.5)
+    led.off()
+    time.sleep(0.5)
 
 if wlan.status() != 3:
     raise RuntimeError('network connection failed')
@@ -37,7 +40,7 @@ else:
     status = wlan.ifconfig()
     print( 'ip = ' + status[0] )
 
-addr = socket.getaddrinfo('0.0.0.0', 8083)[0][-1]
+addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
 
 s = socket.socket()
 s.bind(addr)
@@ -54,21 +57,20 @@ while True:
         print(request)
 
         request = str(request)
-        led_on = request.find('/light/on')
-        led_off = request.find('/light/off')
-        print( 'led on = ' + str(led_on))
-        print( 'led off = ' + str(led_off))
+        toggle_on = request.find('/toggle/on')
+        toggle_off = request.find('/toggle/off')
+        print( 'toggle on = ' + str(toggle_on))
+        print( 'toggle off = ' + str(toggle_off))
 
-        if led_on == 6:
-            print("led on")
-            relays.relay_toggle(4,500, 1)
-            led.value(1)
-            stateis = "LED is ON"
+        if toggle_on == 6:
+            print("Toggling on")
+            relays.relay_toggle(4,500,1)
+            stateis = "Toggling on"
 
-        if led_off == 6:
-            print("led off")
-            led.value(0)
-            stateis = "LED is OFF"
+        if toggle_off == 6:
+            print("Toggling off")
+            relays.relay_toggle(4,500,0)
+            stateis = "Toggling off"
 
         response = html % stateis
 
