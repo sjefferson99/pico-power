@@ -9,18 +9,38 @@ relays = relay_board()
 
 led = Pin("LED", Pin.OUT)
 
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-wlan.connect(config.WIFI_SSID, config.WIFI_PASS)
-
 html = """<!DOCTYPE html>
 <html>
-    <head> <title>Pico W</title> </head>
-    <body> <h1>Pico W</h1>
-        <p>%s</p>
+    <head> <title>Pico-Power</title> </head>
+    <body> <h1>Pico-Power: Relay control of 4 circuits Up to 240v AC or up to 30v DC</h1>
+        %s
     </body>
 </html>
 """
+
+baseurl_content = """
+<p>
+Use the following URL suffixes to drive functions on this Pico:
+<ul>
+<li>Relay control - <a href="relay">/relay</a></li>
+</p>
+"""
+
+relayurl_content = """
+<p>
+You've selected relay
+</p>
+"""
+
+unknownurl_content = """
+<p>
+That URL hasn't been recognised.
+</p>
+"""
+
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect(config.WIFI_SSID, config.WIFI_PASS)
 
 max_wait = 10
 while max_wait > 0:
@@ -57,22 +77,23 @@ while True:
         print(request)
 
         request = str(request)
-        toggle_on = request.find('/toggle/on')
-        toggle_off = request.find('/toggle/off')
-        print( 'toggle on = ' + str(toggle_on))
-        print( 'toggle off = ' + str(toggle_off))
 
-        if toggle_on == 6:
-            print("Toggling on")
-            relays.relay_toggle(4,500,1)
-            stateis = "Toggling on"
+        baseurl = request.find('/ ')
+        relayurl = request.find('/relay ')
+        
+        if baseurl == 6:
+            print("Base URL")
+            content = baseurl_content
 
-        if toggle_off == 6:
-            print("Toggling off")
-            relays.relay_toggle(4,500,0)
-            stateis = "Toggling off"
+        elif relayurl == 6:
+            print("Relay URL")
+            content = relayurl_content
 
-        response = html % stateis
+        else:
+            print("Unknown URL")
+            content = unknownurl_content + baseurl_content
+            
+        response = html % content
 
         cl.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
         cl.send(response)
