@@ -10,6 +10,7 @@ class relay_board:
     def __init__(self) -> None:
         self.pin_mapping = {1: 18, 2: 19, 3: 20, 4: 21}
         self.relays = {}
+        self.states = {0: "off", 1: "on"}
         #Build pin objects and set known state (off)
         x = 1
         p = 18
@@ -25,8 +26,8 @@ class relay_board:
             <ul>
             <li>Switch relay on (NO switched to common) - /relay/switch/{relay number (1-4)}/on</li>
             <li>Switch relay off (NC switched to common) - /relay/switch/{relay number (1-4)}/off/</li>
-            <li>Toggle relay on (NO switched to common) then off with a specified duration period - /relay/toggle/{relay number (1-4)}/on/{duration in ms}</li>
-            <li>Toggle relay off (NC switched to common) then on with a specified duration period - /relay/toggle/{relay number (1-4)}/off/{duration in ms}</li>
+            <li>Toggle relay on (NO switched to common) then off with a specified duration period - /relay/toggle/{relay number (1-4)}/on/{xxxx - duration in ms (must be 4 digits)}</li>
+            <li>Toggle relay off (NC switched to common) then on with a specified duration period - /relay/toggle/{relay number (1-4)}/off/{xxxx - duration in ms (must be 4 digits)}</li>
             </p>
             """
         self.unknown_url_content = """
@@ -76,7 +77,31 @@ class relay_board:
 
         elif action_relay_url == 6:
             print("Relay action URL")
-            content = "Some kind of relay action"
+            
+            relay_number = int(request_data[20:21])
+            on_off = request_data[22:24]
+            if on_off == "on":
+                state = 1
+            else:
+                state = 0
+
+            if request_data[13:19] == "switch":
+                content = "Switching relay " + str(relay_number) + " " + self.states[state]
+                print(content)
+                self.relay_switch(relay_number, state)
+
+            elif request_data[13:19] == "toggle":
+                if state == 0:
+                    duration = int(request_data[26:30])
+                else:
+                    duration = int(request_data[25:29])
+                content = "Toggling relay " + str(relay_number) + " " + self.states[state] + " for " + str(duration) + " ms"
+                print(content)
+                self.relay_toggle(relay_number, duration, state)
+            
+            else:
+                content = "Unknown relay URL " + request_data[13:19]
+                print(content)
 
         else:
             print("Unknown relay URL")
