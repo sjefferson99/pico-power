@@ -3,7 +3,7 @@ from machine import Pin
 import network
 import socket
 import config
-import time
+from time import sleep_ms
 
 relays = relay_board()
 
@@ -43,12 +43,16 @@ while max_wait > 0:
     max_wait -= 1
     print('waiting for connection...')
     led.on()
-    time.sleep(0.5)
+    sleep_ms(500)
     led.off()
-    time.sleep(0.5)
+    sleep_ms(500)
 
 if wlan.status() != 3:
+    while True:
+        led.toggle()
+        sleep_ms(100)
     raise RuntimeError('network connection failed')
+    
 else:
     print('connected')
     status = wlan.ifconfig()
