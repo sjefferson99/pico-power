@@ -15,6 +15,7 @@ This code is built around the Pimoroni Pico W firmware v1.19.9: https://github.c
 
 ## Usage
 - Populate wifi SSID and password in the config.py file
+- Set the startup relay states in the config.py file using the dictionary format example given.
 - Determine pico IP from DHCP server (hostname appears to be "PYBD")
 - Navigate to http://<pico IP>:80 for further instructions
 
