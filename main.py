@@ -3,44 +3,13 @@ sys.path.append('/relays')
 sys.path.append('/tinyweb')
 
 import config
-import network
 from relays import relay_module
+from networking import wireless
 from webserver import website
 from machine import Pin
-from time import sleep_ms
-
-def start_wifi() -> bool:
-    print("Attempting wifi connection")
-    wlan = network.WLAN(network.STA_IF)
-    wlan.active(True)
-    wlan.connect(config.WIFI_SSID, config.WIFI_PASS)
-
-    max_wait = 10
-    while max_wait > 0:
-        if wlan.status() < 0 or wlan.status() >= 3:
-            break
-        max_wait -= 1
-        print('waiting for connection...')
-        led.on()
-        sleep_ms(500)
-        led.off()
-        sleep_ms(500)
-
-    if wlan.status() != 3:
-        error_wait = 100
-        while error_wait > 0:
-            led.toggle()
-            sleep_ms(100)
-            error_wait -= 1
-        return False
-            
-    else:
-        print('connected')
-        status = wlan.ifconfig()
-        print( 'ip = ' + str(status[0]))
-        return True
 
 # Enable webserver option (disable if relay module to be addressed via I2C on boatman network)
+enable_networking = True
 enable_webserver = True
 
 print("Configuring LED")
@@ -58,21 +27,27 @@ for relay in initial_values:
 #print("Running hardware demo")
 #hardware.demo()
 
-if enable_webserver:
+if enable_networking:
     # Instantiate wifi
     print("Wifi enabled - Connecting to wifi")
+    wifi = wireless()
     connected = False
     while connected == False:
-        connected = start_wifi()       
+        connected = wifi.start_wifi(led)
 
-    # Instantiate core website
-    print("Webserver enabled - Building core site")
-    picoserver = website()
+if enable_webserver:
+    if not enable_networking:
+        print("Website needs networking, but networking is disabled - skipping website")
     
-    # Create relay website elements
-    print("Building relay website elements")
-    relays.create_relay_website(picoserver)
+    else:
+        # Instantiate core website
+        print("Webserver enabled - Building core site")
+        picoserver = website()
+        
+        # Create relay website elements
+        print("Building relay website elements")
+        relays.create_relay_website(picoserver)
 
-    # Load the webserver
-    print("Starting web server")
-    picoserver.run()
+        # Load the webserver
+        print("Starting web server")
+        picoserver.run()
