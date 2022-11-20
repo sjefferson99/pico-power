@@ -37,7 +37,7 @@ def start_wifi() -> bool:
     else:
         print('connected')
         status = wlan.ifconfig()
-        print( 'ip = ' + status[0] )
+        print( 'ip = ' + str(status[0]))
         return True
 
 # Enable webserver option (disable if relay module to be addressed via I2C on boatman network)
