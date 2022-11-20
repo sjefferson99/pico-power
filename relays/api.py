@@ -52,16 +52,19 @@ class relay():
         """Switch relay"""
         value = data["value"]
         type = data["type"]
+        print("Received API call - relayid {}, type: {}, value: {}".format(relayid, type, value))
         hardware = relay_board()
         if type == "switch":
+            print("API call to switch")
             hardware.relay_switch(int(relayid), int(value))
             # Return message AND set HTTP response code to "200"
             return {'message': 'Switched'}, 200
         elif type == "toggle":
+            print("API call to toggle")
             hardware.relay_toggle(int(relayid), 500, int(value))
             # Return message AND set HTTP response code to "200"
             return {'message': 'Toggled'}, 200
         else:
-            print("Incorrect data provided")
+            print("Incorrect data provided to relays API")
             # Return message AND set HTTP response code to "200"
             return {'message': 'Error'}, 500
