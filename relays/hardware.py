@@ -52,8 +52,17 @@ class relay_board:
         """Cycles quickly through toggling each relay"""
         x = 1
         while x <= 4:
+            self.relay_switch(x, 1)
+            sleep_ms(200)
+            x += 1
+        x = 1
+        while x <= 4:
+            self.relay_switch(x, 0)
+            sleep_ms(200)
+            x += 1
+        x = 1
+        while x <= 4:
             self.relay_toggle(x, 100, 1)
-            print("Toggling relay ")
             sleep_ms(200)
             x += 1
     
