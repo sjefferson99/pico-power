@@ -11,12 +11,11 @@ class relay_board:
         self.pin_mapping = {1: 18, 2: 19, 3: 20, 4: 21}
         self.relays = {}
         self.states = {0: "off", 1: "on"}
-        #Build pin objects and set known state (off)
+        #Build pin objects
         x = 1
         p = 18
         while x <= 4:
             self.relays[x] = Pin(p, Pin.OUT)
-            self.relays[x].value(0) #set NO to off
             x += 1
             p += 1
         
