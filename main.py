@@ -9,22 +9,8 @@ from webserver import website
 from machine import Pin
 from time import sleep_ms
 
-# Enable webserver option (disable if relay module to be addressed via I2C on boatman network)
-enable_webserver = True
-
-print("Configuring LED")
-led = Pin("LED", Pin.OUT)
-
-# Load relay hardware
-print("Enabling relay hardware")
-relays = relay_module()
-hardware = relays.hardware
-print("Running hardware demo")
-hardware.demo()
-
-if enable_webserver:
-    # Instantiate wifi
-    print("Wifi enabled - Connecting to wifi")
+def start_wifi() -> bool:
+    print("Attempting wifi connection")
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     wlan.connect(config.WIFI_SSID, config.WIFI_PASS)
@@ -41,15 +27,38 @@ if enable_webserver:
         sleep_ms(500)
 
     if wlan.status() != 3:
-        while True:
+        error_wait = 100
+        while error_wait > 0:
             led.toggle()
             sleep_ms(100)
-        raise RuntimeError('network connection failed')
-        
+            error_wait -= 1
+        return False
+            
     else:
         print('connected')
         status = wlan.ifconfig()
         print( 'ip = ' + status[0] )
+        return True
+
+# Enable webserver option (disable if relay module to be addressed via I2C on boatman network)
+enable_webserver = True
+
+print("Configuring LED")
+led = Pin("LED", Pin.OUT)
+
+# Load relay hardware
+print("Enabling relay hardware")
+relays = relay_module()
+hardware = relays.hardware
+print("Running hardware demo")
+#hardware.demo()
+
+if enable_webserver:
+    # Instantiate wifi
+    print("Wifi enabled - Connecting to wifi")
+    connected = False
+    while connected == False:
+        connected = start_wifi()       
 
     # Instantiate core website
     print("Webserver enabled - Building core site")
