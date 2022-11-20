@@ -51,10 +51,9 @@ print("Enabling relay hardware")
 relays = relay_module()
 hardware = relays.hardware
 # Set initial relay states
-hardware.relay_switch(1, 1)
-hardware.relay_switch(2, 1)
-hardware.relay_switch(3, 0)
-hardware.relay_switch(4, 0)
+initial_values = config.initial_values
+for relay in initial_values:
+    hardware.relay_switch(relay, initial_values[relay])
 
 #print("Running hardware demo")
 #hardware.demo()
