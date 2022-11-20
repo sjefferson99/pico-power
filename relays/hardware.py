@@ -11,12 +11,11 @@ class relay_board:
         self.pin_mapping = {1: 18, 2: 19, 3: 20, 4: 21}
         self.relays = {}
         self.states = {0: "off", 1: "on"}
-        #Build pin objects and set known state (off)
+        #Build pin objects
         x = 1
         p = 18
         while x <= 4:
             self.relays[x] = Pin(p, Pin.OUT)
-            self.relays[x].value(0) #set NO to off
             x += 1
             p += 1
         
@@ -52,8 +51,17 @@ class relay_board:
         """Cycles quickly through toggling each relay"""
         x = 1
         while x <= 4:
+            self.relay_switch(x, 1)
+            sleep_ms(200)
+            x += 1
+        x = 1
+        while x <= 4:
+            self.relay_switch(x, 0)
+            sleep_ms(200)
+            x += 1
+        x = 1
+        while x <= 4:
             self.relay_toggle(x, 100, 1)
-            print("Toggling relay ")
             sleep_ms(200)
             x += 1
     

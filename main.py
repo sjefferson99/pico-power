@@ -50,7 +50,13 @@ led = Pin("LED", Pin.OUT)
 print("Enabling relay hardware")
 relays = relay_module()
 hardware = relays.hardware
-print("Running hardware demo")
+# Set initial relay states
+hardware.relay_switch(1, 1)
+hardware.relay_switch(2, 1)
+hardware.relay_switch(3, 0)
+hardware.relay_switch(4, 0)
+
+#print("Running hardware demo")
 #hardware.demo()
 
 if enable_webserver:
