@@ -20,9 +20,9 @@ This code is built around the Pimoroni Pico W firmware v1.19.9: https://github.c
 
 ### LED behaviour
 #### Board power
-The board has a power LED to show that the Pico AND the relay board have power ie 5v on VBUS as opposed to just VSYS
+The board has a power LED to show that the Pico AND the relay board have power i.e. 5v on VBUS as opposed to just VSYS.
 #### Relay state
-The relays each have an LED to show relay state on/off
+The relays each have an LED to show relay state on/off.
 #### Pico LED
 The Pico LED is normally off in proper operation.
 
