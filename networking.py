@@ -12,6 +12,7 @@ class wireless:
     def __init__(self) -> None:
         self.result = False
         self.heartbeat_interval = config.heartbeat_interval
+        self.heartbeat_url = config.heartbeat_url
         self.network_relay = 1
 
     def start_wifi(self, led: Pin) -> bool:
@@ -49,11 +50,15 @@ class wireless:
         return self.wlan.status()
 
     async def test_request(self) -> bool:
+        """
+        Attempt to connect to a known high uptime website and return true if no
+        urequests connection errors.
+        """
         while True:
             print("Test executing")
             try:
                 print("Testing...")
-                res = urequests.get(url='https://api.ipify.org')
+                res = urequests.get(url=self.heartbeat_url)
                 print("Return code {} - Content: {}".format(res.status_code, res.text))
                 res.close()
                 self.result = True
