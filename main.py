@@ -54,8 +54,11 @@ if enable_webserver:
         loop = picoserver.run()
 
         # Add connectivity check to loop
-        print("Adding connectivity test to loop")
-        loop.create_task(wifi.test_request())
+        if config.heartbeat_interval > 0:
+            print("Adding connectivity test to loop")
+            loop.create_task(wifi.test_request_watchdog())
+        else:
+            print("Connectivity test watchdog disabled in config")
 
         # Execute the uasyncio loop
         print("Executing program loop")

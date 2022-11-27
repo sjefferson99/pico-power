@@ -15,6 +15,7 @@ class wireless:
         self.heartbeat_interval = config.heartbeat_interval
         self.heartbeat_url = config.heartbeat_url
         self.network_relay = config.network_relay
+        self.reset_duration = config.reset_duration
 
         self.led = Pin("LED", Pin.OUT)
 
@@ -51,17 +52,20 @@ class wireless:
         return self.wlan.status()
 
     def reset_network(self):
-        # TODO have a 0 option for no network relay and fall back to regular
-        #  testing only
-        print("Resetting network relay")
-        hardware = relay_board()
-        hardware.relay_toggle(self.network_relay, 4000, 0)
+        if self.network_relay > 0:
+            print("Resetting network relay")
+            hardware = relay_board()
+            hardware.relay_toggle(self.network_relay, self.reset_duration, 0)
         
+        else:
+            print ("No network relay defined, entering wifi reconnect loop")
+        
+        print("Reconnecting to wifi")
         connected = False
         while connected == False:
             connected = self.start_wifi()
 
-    async def test_request(self) -> bool:
+    async def test_request_watchdog(self) -> bool:
         """
         Attempt to connect to a known high uptime website. If urequest
         connection error, reset the network relay and run the wifi connect
