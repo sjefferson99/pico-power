@@ -28,3 +28,6 @@ The relays each have an LED to show relay state on/off.
 The Pico LED is normally off in proper operation.
 
 When connecting to the wifi the LED will flash once per second. Should the conection fail, the LED will flash 5 times per second for the retry backoff period then loop back to connecting.
+
+### Connectivity watchdog
+Refer to the config file comments for options to enable polling a specified website at a given interval for a successful http response and take action to reset a specified relay and rerun the wifi connection on any failures.
