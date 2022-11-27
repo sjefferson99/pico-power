@@ -7,6 +7,7 @@ from relays import relay_module
 from networking import wireless
 from webserver import website
 from machine import Pin
+from time import sleep
 
 # Enable webserver option (disable if relay module to be addressed via I2C on boatman network)
 enable_networking = True
@@ -48,6 +49,14 @@ if enable_webserver:
         print("Building relay website elements")
         relays.create_relay_website(picoserver)
 
-        # Load the webserver
-        print("Starting web server")
-        picoserver.run()
+        # Generate uasyncio webserver loop object
+        print("Website server loop generated")
+        loop = picoserver.run()
+
+        # Add connectivity check to loop
+        print("Adding connectivity test to loop")
+        loop.create_task(wifi.test_request())
+
+        # Execute the uasyncio loop
+        print("Executing program loop")
+        loop.run_forever()

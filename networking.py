@@ -3,12 +3,15 @@ from time import sleep_ms
 import config
 from machine import Pin
 import urequests
+import uasyncio as asyncio
 
 class wireless:
     """
     Sets up and manages wifi connection
     """    
     def __init__(self) -> None:
+        self.result = False
+        self.test_count = 0
         self.network_relay = 1
 
     def start_wifi(self, led: Pin) -> bool:
@@ -45,16 +48,20 @@ class wireless:
     def wireless_status(self) -> int:
         return self.wlan.status()
 
-    def test_request(self) -> bool:
-        try:
-            print("Pinging...")
-            res = urequests.get(url='https://api.ipify.org')
-            print("Return code {} - Content: {}".format(res.status_code, res.text))
-            res.close()
-            self.result = True
-    
-        except Exception as e:
-            print("Connectivity issue: {}".format(e))
-            self.result = False
+    async def test_request(self) -> bool:
+        while True:
+            print("Test executing")
+            try:
+                print("Testing...")
+                res = urequests.get(url='https://api.ipify.org')
+                print("Return code {} - Content: {}".format(res.status_code, res.text))
+                res.close()
+                self.result = True
+        
+            except Exception as e:
+                print("Connectivity issue: {}".format(e))
+                self.result = False
+            
+            print("Result: {}".format(self.result))
 
-        return self.result
+            await asyncio.sleep(30)
