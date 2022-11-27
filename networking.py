@@ -13,7 +13,7 @@ class wireless:
         self.result = False
         self.heartbeat_interval = config.heartbeat_interval
         self.heartbeat_url = config.heartbeat_url
-        self.network_relay = 1
+        self.network_relay = config.network_relay
 
     def start_wifi(self, led: Pin) -> bool:
         print("Attempting wifi connection")
