@@ -1,4 +1,5 @@
 from tinyweb import webserver
+import uasyncio
 
 class website:
     """
@@ -27,5 +28,6 @@ class website:
             """
             await response.send(html)
 
-    def run(self):
-        return self.app.run(host='0.0.0.0', port=80)
+    def run(self) -> uasyncio.Loop:
+        loop = self.app.run(host='0.0.0.0', port=80, loop_forever=False)
+        return loop

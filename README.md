@@ -15,6 +15,7 @@ This code is built around the Pimoroni Pico W firmware v1.19.9: https://github.c
 
 ## Usage
 - Populate wifi SSID and password in the config.py file
+- Set the startup relay states in the config.py file using the dictionary format example given.
 - Determine pico IP from DHCP server (hostname appears to be "PYBD")
 - Navigate to http://<pico IP>:80 for further instructions
 
@@ -27,3 +28,6 @@ The relays each have an LED to show relay state on/off.
 The Pico LED is normally off in proper operation.
 
 When connecting to the wifi the LED will flash once per second. Should the conection fail, the LED will flash 5 times per second for the retry backoff period then loop back to connecting.
+
+### Connectivity watchdog
+Refer to the config file comments for options to enable polling a specified website at a given interval for a successful http response and take action to reset a specified relay and rerun the wifi connection on any failures.

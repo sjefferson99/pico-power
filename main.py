@@ -3,44 +3,14 @@ sys.path.append('/relays')
 sys.path.append('/tinyweb')
 
 import config
-import network
 from relays import relay_module
+from networking import wireless
 from webserver import website
 from machine import Pin
-from time import sleep_ms
-
-def start_wifi() -> bool:
-    print("Attempting wifi connection")
-    wlan = network.WLAN(network.STA_IF)
-    wlan.active(True)
-    wlan.connect(config.WIFI_SSID, config.WIFI_PASS)
-
-    max_wait = 10
-    while max_wait > 0:
-        if wlan.status() < 0 or wlan.status() >= 3:
-            break
-        max_wait -= 1
-        print('waiting for connection...')
-        led.on()
-        sleep_ms(500)
-        led.off()
-        sleep_ms(500)
-
-    if wlan.status() != 3:
-        error_wait = 100
-        while error_wait > 0:
-            led.toggle()
-            sleep_ms(100)
-            error_wait -= 1
-        return False
-            
-    else:
-        print('connected')
-        status = wlan.ifconfig()
-        print( 'ip = ' + str(status[0]))
-        return True
+from time import sleep
 
 # Enable webserver option (disable if relay module to be addressed via I2C on boatman network)
+enable_networking = True
 enable_webserver = True
 
 print("Configuring LED")
@@ -51,29 +21,45 @@ print("Enabling relay hardware")
 relays = relay_module()
 hardware = relays.hardware
 # Set initial relay states
-hardware.relay_switch(1, 1)
-hardware.relay_switch(2, 1)
-hardware.relay_switch(3, 0)
-hardware.relay_switch(4, 0)
+initial_values = config.initial_values
+for relay in initial_values:
+    hardware.relay_switch(relay, initial_values[relay])
 
 #print("Running hardware demo")
 #hardware.demo()
 
-if enable_webserver:
+if enable_networking:
     # Instantiate wifi
     print("Wifi enabled - Connecting to wifi")
+    wifi = wireless()
     connected = False
     while connected == False:
-        connected = start_wifi()       
+        connected = wifi.start_wifi()
 
-    # Instantiate core website
-    print("Webserver enabled - Building core site")
-    picoserver = website()
+if enable_webserver:
+    if not enable_networking:
+        print("Website needs networking, but networking is disabled - skipping website")
     
-    # Create relay website elements
-    print("Building relay website elements")
-    relays.create_relay_website(picoserver)
+    else:
+        # Instantiate core website
+        print("Webserver enabled - Building core site")
+        picoserver = website()
+        
+        # Create relay website elements
+        print("Building relay website elements")
+        relays.create_relay_website(picoserver)
 
-    # Load the webserver
-    print("Starting web server")
-    picoserver.run()
+        # Generate uasyncio webserver loop object
+        print("Website server loop generated")
+        loop = picoserver.run()
+
+        # Add connectivity check to loop
+        if config.heartbeat_interval > 0:
+            print("Adding connectivity test to loop")
+            loop.create_task(wifi.test_request_watchdog())
+        else:
+            print("Connectivity test watchdog disabled in config")
+
+        # Execute the uasyncio loop
+        print("Executing program loop")
+        loop.run_forever()
