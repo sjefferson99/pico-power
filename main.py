@@ -34,7 +34,7 @@ if enable_networking:
     wifi = wireless()
     connected = False
     while connected == False:
-        connected = wifi.start_wifi(led)
+        connected = wifi.start_wifi()
 
 if enable_webserver:
     if not enable_networking:
