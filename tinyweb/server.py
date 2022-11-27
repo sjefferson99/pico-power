@@ -671,7 +671,7 @@ class webserver:
         finally:
             sock.close()
 
-    def run(self, host="127.0.0.1", port=8081, loop_forever=True):
+    def run(self, host="127.0.0.1", port=8081, loop_forever=True) -> asyncio.Loop:
         """Run Web Server. By default it runs forever.
 
         Keyword arguments:
@@ -683,6 +683,9 @@ class webserver:
         self.loop.create_task(self._server_coro)
         if loop_forever:
             self.loop.run_forever()
+            return self.loop
+        else:
+            return self.loop
 
     def shutdown(self):
         """Gracefully shutdown Web Server"""
