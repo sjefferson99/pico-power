@@ -11,7 +11,7 @@ class wireless:
     """    
     def __init__(self) -> None:
         self.result = False
-        self.test_count = 0
+        self.heartbeat_interval = config.heartbeat_interval
         self.network_relay = 1
 
     def start_wifi(self, led: Pin) -> bool:
@@ -64,4 +64,4 @@ class wireless:
             
             print("Result: {}".format(self.result))
 
-            await asyncio.sleep(30)
+            await asyncio.sleep(self.heartbeat_interval)
